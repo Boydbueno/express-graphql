@@ -4,28 +4,47 @@ const graphqlHTTP = require('express-graphql')
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
+  type RandomDie {
+    roll(numRolls: Int!): [Int],
+    rollOnce: Int,
+  }
+  
   type Query {
+    getDie(numSides: Int): RandomDie,
     hello: String,
     random: Float!,
-    rollDice(numDice: Int!, numSides: Int): [Int]
   }
 `);
 
 // The root provides a resolver function for each API endpoint
+class RandomDie {
+    private readonly numSides: number;
+
+    constructor(numSides: number) {
+        this.numSides = numSides
+    }
+
+    rollOnce = () => 1 + Math.floor(Math.random() * this.numSides)
+
+    roll({numRolls}) {
+        let rolls = []
+        while (numRolls--) {
+            rolls.push(this.rollOnce())
+        }
+        return rolls
+    }
+}
+
 const root = {
+    getDie({numSides}) {
+        return new RandomDie(numSides)
+    },
     hello() {
         return 'Hello world!'
     },
     random() {
         return Math.random()
     },
-    rollDice({numDice, numSides}) {
-        let rolls = []
-        while (numDice--) {
-            rolls.push(1 + Math.floor(Math.random() * numSides))
-        }
-        return rolls
-    }
 };
 
 const app = express();
