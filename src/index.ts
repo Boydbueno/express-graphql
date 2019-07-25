@@ -10,11 +10,6 @@ import {Pokemon} from "./pokemon/resolver";
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
-  type RandomDie {
-    roll(numRolls: Int!): [Int],
-    rollOnce: Int,
-  }
-  
   type Type {
     name: String,
     slot: Int,
@@ -34,35 +29,13 @@ const schema = buildSchema(`
   
   type Query {
     hello: String,
-    getDie(numSides: Int): RandomDie,
     getPokemon(id: Int): Pokemon,
   }
 `);
 
-class RandomDie {
-    private readonly numSides: number
-
-    constructor(numSides: number) {
-        this.numSides = numSides
-    }
-
-    rollOnce = () => 1 + Math.floor(Math.random() * this.numSides)
-
-    roll({numRolls}) {
-        let rolls = []
-        while (numRolls--) {
-            rolls.push(this.rollOnce())
-        }
-        return rolls
-    }
-}
-
 const root = {
     hello() {
         return 'Hello world!'
-    },
-    getDie({numSides}) {
-        return new RandomDie(numSides)
     },
     getPokemon({id}) {
         return new Pokemon(id)
