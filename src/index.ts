@@ -1,12 +1,12 @@
-import * as morgan from 'morgan'
-import * as express from 'express'
-import * as request from 'request-promise'
-import * as requestDebug from 'request-debug'
-import * as graphqlHTTP from 'express-graphql'
+import * as express from "express"
+import * as graphqlHTTP from "express-graphql"
+import * as morgan from "morgan"
+import * as requestDebug from "request-debug"
+import * as request from "request-promise"
 
-import { buildSchema } from 'graphql'
+import { buildSchema } from "graphql"
 
-import {Pokemon} from "./pokemon/resolver";
+import {Pokemon} from "./pokemon/resolver"
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
@@ -15,51 +15,51 @@ const schema = buildSchema(`
     slot: Int,
     moves: [Move]
   }
-  
+
   type Move {
     name: String,
     power: Int
   }
-  
+
   type Pokemon {
     name: String,
     weight: Int,
     types: [Type]
   }
-  
+
   type Query {
     hello: String,
     getPokemon(id: Int): Pokemon,
   }
-`);
+`)
 
 const root = {
     hello() {
-        return 'Hello world!'
+        return "Hello world!"
     },
     getPokemon({id}) {
         return new Pokemon(id)
     },
-};
+}
 
-const app = express();
+const app = express()
 const {
     PORT = 3000,
-} = process.env;
+} = process.env
 
-app.use(morgan('tiny'));
-app.use('/graphql', graphqlHTTP({
-    schema: schema,
-    rootValue: root,
+app.use(morgan("tiny"))
+app.use("/graphql", graphqlHTTP({
     graphiql: true,
-}));
+    rootValue: root,
+    schema,
+}))
 
 app.listen(PORT, () => {
-    console.log('Running a GraphQL API server at localhost:' + PORT + '/graphql');
-});
+    console.log("Running a GraphQL API server at localhost:" + PORT + "/graphql")
+})
 
 requestDebug(request, (type, data, r) => {
-    if (type === 'request') {
+    if (type === "request") {
         console.info(r.uri.href)
     }
 })
