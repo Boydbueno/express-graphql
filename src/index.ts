@@ -48,7 +48,7 @@ class Pokemon {
             uri: `https://pokeapi.co/api/v2/pokemon/${this.id}/`,
             json: true,
         }
-        return await request(options).then((body) => {
+        return request(options).then((body) => {
             return body.name
         })
     }
@@ -59,7 +59,7 @@ class Pokemon {
             uri: `https://pokeapi.co/api/v2/pokemon/${this.id}/`,
             json: true,
         }
-        return await request(options).then((body) => {
+        return request(options).then((body) => {
             return body.weight
         })
     }
@@ -70,7 +70,7 @@ class Pokemon {
             uri: `https://pokeapi.co/api/v2/pokemon/${this.id}/`,
             json: true,
         }
-        return await request(options).then((body) => {
+        return request(options).then((body) => {
             return body.types.map(type => new Type(type.type.name, type.slot))
         })
     }
@@ -91,7 +91,7 @@ class Type {
             uri: `https://pokeapi.co/api/v2/type/${this.name}/`,
             json: true,
         }
-        return await request(options).then((body) => {
+        return request(options).then((body) => {
             return body.moves.map(move => new Move(move.name))
         })
     }
@@ -110,9 +110,9 @@ class Move {
             uri: `https://pokeapi.co/api/v2/move/${this.name}/`,
             json: true,
         }
-        return await request(options).then((body) => {
+        return request(options).then((body) => {
             return body.power
-        })
+        });
     }
 }
 
